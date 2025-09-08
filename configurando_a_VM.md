@@ -53,6 +53,8 @@ sudo:x:27:kaeu
 
 > Faça logout e login novamente para alteração fazer efeito com `exit`. Conferir com `which sudo`.
 
+## Melhorias e Ajustes
+
 ### Acesso via SSH e Interfaces de Rede
 
 Você vai notar ao longo do tempo que ele não permite realizar a copia (Ctrl+C) ou cola (Ctrl+V) de informações por ali, por exemplo, ou talvez digitar de uma forma mais ágil como você tem o costume na sua máquina local. Esse problema pode ser resolvido de algumas formas, mas aqui, vamos apresentar uma configuração via acesso SSH.
@@ -65,9 +67,9 @@ Aqui nós realizamos a instalação somente dos utilitários padrão e o servido
 
 Podemos realizar a conexão da sua máquina (host) à VM de algumas formas:
 
-1. **Modo NAT**: Encaminhamento de Portas pelo VirtualBox
-2. **Modo Host-Only**: Criar uma rede privada entre o Host e a VM
-3. **Modo Bridge**: Acesso direto ao IP da VM via ponte à rede física do `host`
+1. **Modo NAT**: Encaminhamento de Portas pelo VirtualBox.
+2. **Modo Host-Only**: Criar uma rede privada entre o Host e a VM.
+3. **Modo Bridge**: Acesso direto ao IP da VM via ponte à rede física do `host`.
 
 > Aqui vamos abordar apenas o modo NAT e o Host-Only.
 
@@ -142,8 +144,7 @@ kaeu@controller-mo:~$ ip a
     link/ether 08:00:27:d7:4c:f8 brd ff:ff:ff:ff:ff:ff
     altname enx080027d74cf8
 ```
-> Repare que a 3ª interface `enp0s9` está desativada `DOWN`. Esta representa a interface que configuramos pelo Adaptador 2 e atribuimos à nossa rede privada `HostNetwork`. Para ativá-la precisamos entrar na VM e executa os seguintes comandos:
-> Pensando na interface dos computadores da FACOM, vale ressaltar que a interface `enp0s8` desse output será equivalente à interface `enp0s3` e a interface `enp0s9` será à interface `enp0s8`. Apenas preste atenção aos nomes, de resto os comandos são os mesmos.
+> Repare que a 3ª interface `enp0s9` está desativada `DOWN`. Esta representa a interface que configuramos pelo Adaptador 2 e atribuimos à nossa rede privada `HostNetwork`. Para ativá-la precisamos entrar na VM e executa os comandos abaixo.
 
 ```bash
 # Configure a interface para DHCP
@@ -166,6 +167,8 @@ $ sudo apt install isc-dhcp-client
 $ ip a
 ```
 
+> Pensando na interface dos computadores da FACOM, vale ressaltar que a interface `enp0s8` desse output será equivalente à interface `enp0s3` e a interface `enp0s9` será à interface `enp0s8`. Apenas preste atenção aos nomes, de resto os comandos são os mesmos.
+>
 > Agora você recolhe o ip da interface `enp0s9` em `inet`, que no meu caso é `192.168.56.2` e realiza o acesso na sua máquina com:
 
 ```bash
