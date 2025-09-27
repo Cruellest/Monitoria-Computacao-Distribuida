@@ -42,3 +42,7 @@ $ ssh -L 37853:127.0.0.1:37853 kaeu@192.168.56.3
 ```
 
 > Você também pode escolher a porta da sua máquina que esteja livre. Basta alterar o <porta-host>, mantendo a porta final <porta-guest> conforme foi entregue pelo minikube.
+
+## Links e outras referências
+
+- [Dashboard | K8s](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/)

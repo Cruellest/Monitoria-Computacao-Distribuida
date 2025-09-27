@@ -1,13 +1,14 @@
 # Instalação Minikube
 
-- [O que é Minikube?](sobre.md#o-que-é-minikube)
+- [O que é Minikube?](Introdução.md#o-que-é-minikube)
 
 ## Instalando as ferramentas necessárias
 
 ### Pré-requisitos
 
 > Pra essa prática, você já deve ter a VM com o sabor `Debian 12 Bookworm` rodando pra executar os próximos comando no terminal. Caso ainda não tenha feito isso você pode seguir os passos do pdf abaixo:
-> - [Preparando e subindo a VM](debian_12-virtualbox.pdf)
+>
+> - [Preparando e subindo a VM](../debian_12-virtualbox.pdf)
 
 ### Instalando o minikube e sua CLI (kubectl)
 
@@ -237,7 +238,6 @@ $ minikube ssh
 docker@minikube:~$ 
 ```
 
-
 ### Adicionando workers
 
 > Agora vamos criar um cluster com um worker. Para ativarmos nosso cluster, primeiro nós vamos [criar o outro `node`](https://minikube.sigs.k8s.io/docs/commands/node/), caso já não o tenha feito:
@@ -344,6 +344,12 @@ $ minikube profile meu-cluster
 
 > Agora, todos os comandos `kubectl` serão executados no cluster selecionado.
 
+### Parando clusters
+
+```bash
+$ 
+```
+
 ### Deletando clusters
 
 ```bash
@@ -368,3 +374,6 @@ $ minikube delete --profile meu-cluster
 
 > Isso remove completamente o cluster com o nome especificado. Para mais informações, consulte a [documentação oficial do Minikube](https://minikube.sigs.k8s.io/docs/).
 
+---
+
+- Voltar ao [README.md](../README.md)

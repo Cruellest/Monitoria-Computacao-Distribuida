@@ -13,7 +13,7 @@
 
 ## O que é Minikube?
 
-Já o minikube é uma ferramenta derivada do Kubernetes que foi desenvolvida para facilitar o aprendizado em K8s. Dessa forma, o minikube atua com um cluster K8 local - geralmente com um único nó - na máquina de quem a executa, enquanto o K8s roda com clusters distribuídos.
+Já o minikube é uma ferramenta derivada do Kubernetes que foi desenvolvida para facilitar o aprendizado e o desenvolvimento em K8s. Dessa forma, o minikube atua com um cluster K8 local - geralmente com um único nó - na máquina de quem a executa, enquanto o K8s roda com clusters distribuídos.
 
 ### Principais usos
 
@@ -28,6 +28,29 @@ Para essa disciplina vamos utilizar no laboratório somente o **minikube**.
 - [Laboratório 1 - Instalando Minikube](Laboratório%201%20-%20Instalação.md)
 - [Laboratório 2 - Dashboard e Métricas](Laboratório%202%20-%20Dashboard%20e%20Métricas.md)
 - [Laboratório 3 - Instanciando Serviços](Laboratório%202%20-%20Dashboard%20e%20Métricas.md)
+
+## Conceitos importantes
+
+> Um cluster do kubernetes é composto por dois tipos de recursos principais:
+> 
+> - Control Plane
+> - Node
+> 
+> ### Control Plane | Manager
+> 
+> Este recurso é responsável por gerenciar o cluster e tem como principais atividades:
+> 
+> - Agendamento de tarefas do(s) aplicativo(s)
+> - Mantenimento do Estado Desejado da(s) Aplicação(ões)
+> - Escalabilidade das Aplicações
+> - Lançamento de Novas Atualizações e Lançamentos
+> - Detecção de/Respostas à Eventos: como, por exemplo, detectar que o número de replicas não está sendo entregue.
+> 
+> ### Nodes | Workers
+>
+> Assim como seu nome já diz, os workers tem como responsabilidade
+> 
+> 
 
 ## Casos práticos
 

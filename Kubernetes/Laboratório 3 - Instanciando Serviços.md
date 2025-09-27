@@ -4,6 +4,8 @@
 
 1. [Nextcloud](#nextcloud)
 2. [Wordpress](#wordpress)
+3. [Sterling PDF]()
+3. [Portainer + NPM]()
 
 ## Pré-requisitos
 
@@ -42,33 +44,27 @@ kubernetes-dashboard   Active   47h
 # Alterando para um ns específico
 $ kubectl config set-context --current --namespace=wordpress
 
-# Deletando o
-```
+# Deletando o namespace
+$ kubectl delete namespace <nome-namespace>
+# Parando o namespace
+$ kubectl scale deployment <app> --replicas=0 -n <app-projeto> # Caso deseje voltar, apenas altere as replicas para 1.
 
-### Parando o namespace
-
-```bash
-$ kubectl scale deployment <app> --replicas=0 -n <app-projeto>
-```
-> Caso deseje voltar, apenas altere as replicas para 1.
-
-### Deletando todos os recursos do namespace, mantendo o namespace
-
-```bash
+# Deletando todos os recursos do namespace, mantendo o namespace
 $ kubectl delete all --all -n <namespace>
-$ kubectl delete pvc --all -n <namespace>
 
-# Exemplo
-$ kubectl delete pvc --all -n nextcloud
-pod "nextcloud-55846b7f8c-55mvk" deleted
-pod "postgres-6967f5b4b-fftqm" deleted
-service "nextcloud" deleted
-service "postgres" deleted
-deployment.apps "nextcloud" deleted
-deployment.apps "postgres" deleted
-persistentvolumeclaim "nextcloud-pvc" deleted
-persistentvolumeclaim "postgres-pvc" deleted
+# Deletando Volumes Persistentes
+$ kubectl delete pv --all -n <namespace>
+
+# Deletando a requisição de uso do PV 
+$ kubectl delete pvc --all -n <namespace>
 ```
+
+## Verificações
+
+- [ ] Namespace
+- [ ] Pods
+- [ ] Volumes Persistentes (PV ou PVC)
+- [ ] Serviços
 
 ## Nextcloud
 
@@ -78,160 +74,28 @@ $ kubectl create namespace nextcloud
 namespace/nextcloud created
 ```
 
-### Deploy | PostgreSQL
+### Deploy
+
+> Podemos fazer o deploy executanto um único arquivo. Aqui nomeamos como [postgres-nextcloud.yml](./services/postgres-nextcloud.yml).
+>
+> Antes, vamos criar uma pasta só para esse serviço:
+>
 
 ```bash
 $ mkdir nextcloud
 $ cd nextcloud
-$ sudo nano postgres-deployment.yml
-```
-
-```yaml
-# postgres-deployment.yml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-pvc
-  namespace: nextcloud
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: postgres
-  namespace: nextcloud
-spec:
-  selector:
-    matchLabels:
-      app: postgres
-  template:
-    metadata:
-      labels:
-        app: postgres
-    spec:
-      containers:
-      - name: postgres
-        image: postgres:16
-        env:
-        - name: POSTGRES_DB
-          value: nextcloud
-        - name: POSTGRES_USER
-          value: nextcloud
-        - name: POSTGRES_PASSWORD
-          value: nextpass
-        ports:
-        - containerPort: 5432
-        volumeMounts:
-        - name: postgres-storage
-          mountPath: /var/lib/postgresql/data
-      volumes:
-      - name: postgres-storage
-        persistentVolumeClaim:
-          claimName: postgres-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgres
-  namespace: nextcloud
-spec:
-  ports:
-  - port: 5432
-  selector:
-    app: postgres
-# Fim postgres-deployment.yml
+$ sudo nano postgres-nextcloud.yml
 
 # Aplicar o manifesto
-$ kubectl apply -f postgres-deployment.yml
+$ kubectl apply -f postgres-nextcloud.yml
 persistentvolumeclaim/postgres-pvc created
 deployment.apps/postgres created
 service/postgres created
 ```
 
-### Deploy | Nextcloud
-
-```bash
-# Ainda em ~/nextcloud
-$ sudo nano nextcloud-deployment.yml
-
-# nextcloud-deployment.yml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: nextcloud-pvc
-  namespace: nextcloud
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nextcloud
-  namespace: nextcloud
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: nextcloud
-  template:
-    metadata:
-      labels:
-        app: nextcloud
-    spec:
-      containers:
-      - name: nextcloud
-        image: nextcloud:29-apache
-        env:
-        - name: POSTGRES_HOST
-          value: postgres
-        - name: POSTGRES_DB
-          value: nextcloud
-        - name: POSTGRES_USER
-          value: nextcloud
-        - name: POSTGRES_PASSWORD
-          value: nextpass
-        ports:
-        - containerPort: 80
-        volumeMounts:
-        - name: nextcloud-data
-          mountPath: /var/www/html
-      volumes:
-      - name: nextcloud-data
-        persistentVolumeClaim:
-          claimName: nextcloud-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nextcloud
-  namespace: nextcloud
-spec:
-  ports:
-  - port: 80
-  selector:
-    app: nextcloud
-  type: NodePort
-# Fim nextcloud-deployment.yml
-
-# Aplicar o manifesto
-$ kubectl apply -f nextcloud-deployment.yml
-persistentvolumeclaim/nextcloud-pvc created
-deployment.apps/nextcloud created
-service/nextcloud created
-```
-
 #### Acessando o serviço | localhost:8080
 
-> Pode demorar alguns minutos até subir o nextcloud. Verifique com `kubectl get pods -n nextcloud`. 
+> Pode demorar alguns minutos até subir o nextcloud. Verifique com `kubectl get pods -n nextcloud`.
 
 ```bash
 # Solicite a URL do serviço
@@ -242,7 +106,7 @@ http://192.168.49.2:32563
 > Assim como vimos la no [laboratório 2 de acesso ao dashboard](Laboratório%202%20-%20Dashboard%20e%20Métricas.md) via navegador da sua máquina física, vamos fazer o tunelamento via SSH para o `nextcloud`.
 
 ```bash
-# Na shell da sua máquina execute:
+# Na shell da sua máquina execute, alterando para o seu usuário e ip da sua máquina:
 $ ssh -L 8080:192.168.49.2:32563 kaeu@192.168.56.3
 ```
 
@@ -253,152 +117,12 @@ $ ssh -L 8080:192.168.49.2:32563 kaeu@192.168.56.3
 ## Wordpress
 
 ```bash
-# Criando o namespace
-$ kubectl create namespace wordpress
-namespace/wordpress created
-
 # Criando o repositorio
 $ mkdir wordpress
 $ cd wordpress
-```
 
-### Deploy
-
-```bash
-$ sudo nano wp-deployment.yml
-````
-
-```bash
-# wp-mysql-deployment.yml
-# Namespace
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: wordpress
----
-# PVC compartilhado (usado por MySQL e WordPress)
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: wordpress-pvc
-  namespace: wordpress
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
-  storageClassName: standard
----
-# Secret com a senha do MySQL
-apiVersion: v1
-kind: Secret
-metadata:
-  name: mysql-pass
-  namespace: wordpress
-type: Opaque
-data:
-  password: cGFzc3dvcmQ=  # "password" em base64
----
-# Deployment do MySQL
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mysql
-  namespace: wordpress
-spec:
-  selector:
-    matchLabels:
-      app: mysql
-  strategy:
-    type: Recreate
-  template:
-    metadata:
-      labels:
-        app: mysql
-    spec:
-      containers:
-      - name: mysql
-        image: mysql:5.7
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-pass
-              key: password
-        ports:
-        - containerPort: 3306
-        volumeMounts:
-        - name: mysql-persistent-storage
-          mountPath: /var/lib/mysql
-      volumes:
-      - name: mysql-persistent-storage
-        persistentVolumeClaim:
-          claimName: wordpress-pvc
----
-# Service do MySQL
-apiVersion: v1
-kind: Service
-metadata:
-  name: mysql
-  namespace: wordpress
-spec:
-  ports:
-    - port: 3306
-  selector:
-    app: mysql
----
-# Deployment do WordPress
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: wordpress
-  namespace: wordpress
-spec:
-  selector:
-    matchLabels:
-      app: wordpress
-  template:
-    metadata:
-      labels:
-        app: wordpress
-    spec:
-      containers:
-      - name: wordpress
-        image: wordpress:6.5-apache
-        env:
-        - name: WORDPRESS_DB_HOST
-          value: mysql.wordpress.svc.cluster.local
-        - name: WORDPRESS_DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-pass
-              key: password
-        ports:
-        - containerPort: 80
-        volumeMounts:
-        - name: wordpress-persistent-storage
-          mountPath: /var/www/html
-      volumes:
-      - name: wordpress-persistent-storage
-        persistentVolumeClaim:
-          claimName: wordpress-pvc
----
-# Service do WordPress
-apiVersion: v1
-kind: Service
-metadata:
-  name: wordpress
-  namespace: wordpress
-spec:
-  type: NodePort
-  ports:
-    - port: 80
-      nodePort: 30080
-  selector:
-    app: wordpress
-
-# Fim wp-mysql-deployment.yml
+# Descrevendo o manifesto
+$ sudo nano [wp-mysql.yml](./services/wp-mysql.yml)
 ```
 
 ```bash
@@ -413,16 +137,19 @@ deployment.apps/wordpress created
 service/wordpress created
 ```
 
-### Deploy | Verificação
+### Verificação
 
 ```bash
 # Ainda em ~/wordpress
 $ kubectl get pvc -n wordpress
 $ kubectl get pods -n wordpress
+
+# Logs dos pods
 $ kubectl logs -n wordpress -l app=mysql
 $ kubectl logs -n wordpress -l app=wordpress
-$ kubectl rollout restart deployment wordpress -n wordpress
 
+# 
+$ kubectl rollout restart deployment wordpress -n wordpress
 ```
 
 #### Acessando o serviço | localhost:8080
@@ -438,10 +165,33 @@ http://192.168.49.2:30080
 > Assim como vimos la no [laboratório 2 de acesso ao dashboard](Laboratório%202%20-%20Dashboard%20e%20Métricas.md) via navegador da sua máquina física, vamos fazer o tunelamento via SSH para o `wordpress`.
 
 ```bash
-# Na shell da sua máquina física execute:
-$ ssh -L 8080:192.168.49.2:32563 kaeu@192.168.56.3
+# Na shell da sua máquina física execute, alterando para o seu usuário:
+$ ssh -L 8080:192.168.49.2:30080 kaeu@192.168.56.3
 ```
 
-> Acesse o serviço em `http://localhost:30080`.
+> Acesse o serviço em `http://localhost:8080`.
 
-- [Wordpress | Documentação Oficial](https://docs.nextcloud.com/)
+## Portainer
+
+```bash
+$ kubectl apply -n portainer -f https://downloads.portainer.io/ce-lts/portainer.yaml
+```
+
+```bash
+# Ainda em ~/wordpress
+$ kubectl get pvc -n wordpress
+$ kubectl get pods -n wordpress
+
+# Logs dos pods
+$ kubectl logs -n wordpress -l app=mysql
+$ kubectl logs -n wordpress -l app=wordpress
+
+# 
+$ kubectl rollout restart deployment wordpress -n wordpress
+```
+
+## Links e outras referências
+
+- [Wordpress + MySQL | Ambiente de Desenvolvimento](https://kubernetes.io/docs/tutorials/stateful-application/mysql-wordpress-persistent-volume/)
+- [Wordpress + MySQL | Ambiente de Produção](https://github.com/bitnami/charts/tree/main/bitnami/wordpress)
+- [Portainer](https://docs.portainer.io/start/install-ce/server/kubernetes/baremetal#deploy-using-yaml-manifests)
