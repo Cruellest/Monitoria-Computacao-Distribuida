@@ -1,4 +1,4 @@
-Enquanto o Docker e o Compose nos permitem empacotar e executar aplicações de forma isolada e consistente, a tarefa de preparar e gerenciar a infraestrutura subjacente — como instalar pacotes, configurar serviços e garantir o estado dos servidores — ainda é um desafio. Nesta aula, vamos introduzir o **Ansible**, uma poderosa ferramenta de automação que simplifica radicalmente a configuração e o gerenciamento de sistemas.
+Enquanto o Docker e o Compose nos permitem empacotar e executar aplicações de forma isolada e consistente, a tarefa de preparar e gerenciar a infraestrutura subjacente como instalar pacotes, configurar serviços e garantir o estado dos servidores ainda é um desafio. Nesta aula, vamos introduzir o **Ansible**, uma poderosa ferramenta de automação que simplifica radicalmente a configuração e o gerenciamento de sistemas.
 
 ---
 
