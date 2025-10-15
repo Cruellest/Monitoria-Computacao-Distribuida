@@ -6,7 +6,7 @@ Nesta aula, vamos explorar em profundidade um dos recursos mais importantes do P
 
 Tradicionalmente, ferramentas de contêiner como o Docker dependem de um *daemon* (um processo de fundo) que roda com privilégios de **root** (superusuário). Isso significa que, mesmo que você execute comandos como um usuário comum, a criação e o gerenciamento dos contêineres são, na verdade, realizados por um processo com acesso total ao sistema host.
 
-Um ambiente **rootless** (sem root) quebra esse paradigma. Com o Podman, todo o ciclo de vida de um contêiner — desde baixar uma imagem, executá-la, configurar redes e volumes — acontece inteiramente com os privilégios do **seu próprio usuário**, sem nenhuma necessidade de escalação para `root`.
+Um ambiente **rootless** (sem root) quebra esse paradigma. Com o Podman, todo o ciclo de vida de um contêiner desde baixar uma imagem, executá-la, configurar redes e volumes acontece inteiramente com os privilégios do **seu próprio usuário**, sem nenhuma necessidade de escalação para `root`.
 
 **A principal vantagem é a segurança:** se um processo malicioso escapar de um contêiner, ele terá apenas as permissões do usuário que o executou, e não acesso irrestrito ao sistema host.
 
