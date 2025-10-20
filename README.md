@@ -2,10 +2,6 @@
 
 Este repositório foi criado com o intuito de auxiliar as aulas práticas da disciplina de Computação Distribuída. Nele apresentamos guias e casos práticos para algumas das tecnologias mais utilizadas pelo mercado como Docker, Podman e Kubernetes/minikube. 
 
-- [Docker | Documentação Oficial](https://docs.docker.com/)
-- [Podman | Documentação Oficial](https://docs.podman.io/en/latest/)
-- [Kubernetes | Documentação Oficial](https://kubernetes.io/docs/home/)
-- [Minikube | Documentação Oficial](https://minikube.sigs.k8s.io/docs/)
 
 ## Sumário
 
@@ -45,6 +41,21 @@ Este repositório foi criado com o intuito de auxiliar as aulas práticas da dis
 
 #### Casos práticos
 
-- [Caso #01 | Nextcloud](./Kubernetes/)
-- [Caso #02 | Wordpress](./Kubernetes/)
-- [Caso #03 | Traefik](./Kubernetes/)
+- [Caso #01 | Nextcloud](./Kubernetes/Laboratório%203%20-%20Instanciando%20Serviços.md#nextcloud)
+- [Caso #02 | Wordpress](./Kubernetes/Laboratório%203%20-%20Instanciando%20Serviços.md#wordpress)
+- [Caso #03 | Portainer](./Kubernetes/Laboratório%203%20-%20Instanciando%20Serviços.md#portainer)
+- [Caso #04 | Traefik]()
+
+### LXC
+
+- [Laboratório 1 | LXC](./LXC/Lab%2001.md)
+- [Laboratório 2 | Incus](./LXC/Lab%2002.md)
+
+## Links e Referências
+
+- [Docker | Documentação Oficial](https://docs.docker.com/)
+- [Podman | Documentação Oficial](https://docs.podman.io/en/latest/)
+- [Kubernetes | Documentação Oficial](https://kubernetes.io/docs/home/)
+- [Minikube | Documentação Oficial](https://minikube.sigs.k8s.io/docs/)
+- [LXC | Documentação Oficial](https://linuxcontainers.org/lxc/introduction/)
+- [Incus | Documentação Oficial](https://linuxcontainers.org/incus/introduction/)

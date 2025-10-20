@@ -1,0 +1,155 @@
+# ===============================
+# NAMESPACE
+# ===============================
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nextcloud
+---
+# ===============================
+# SECRET (PostgreSQL password)
+# ===============================
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-pass
+  namespace: nextcloud
+type: Opaque
+stringData:   # Codifica automaticamente para base64 ao criar o Secret
+  user: nextclouduser
+  password: nxcpassword
+---
+# ===============================
+# SERVICE - PostgreSQL
+# ===============================
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: nextcloud
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: postgres
+# ===============================
+# PVC - PostgreSQL
+# ===============================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: nextcloud
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+# ===============================
+# DEPLOYMENT - PostgreSQL
+# ===============================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: nextcloud
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:16
+        env:
+        - name: POSTGRES_DB
+          value: nextcloud
+        - name: POSTGRES_USER
+          value: nextcloud
+        - name: POSTGRES_PASSWORD
+          value: nextpass
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: postgres-pvc
+---
+# ===============================
+# SERVICE - Nextcloud
+# ===============================
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: nextcloud
+  type: NodePort
+---
+# ===============================
+# PVC - Nextcloud
+# ===============================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-pvc
+  namespace: nextcloud
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+# ===============================
+# DEPLOYMENT - Nextcloud
+# ===============================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      containers:
+      - name: nextcloud
+        image: nextcloud:29-apache
+        env:
+        - name: POSTGRES_HOST
+          value: postgres
+        - name: POSTGRES_DB
+          value: nextcloud
+        - name: POSTGRES_USER
+          value: nextcloud
+        - name: POSTGRES_PASSWORD
+          value: nextpass
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nextcloud-data
+          mountPath: /var/www/html
+      volumes:
+      - name: nextcloud-data
+        persistentVolumeClaim:
+          claimName: nextcloud-pvc

@@ -171,7 +171,7 @@ $ ssh -L 8080:192.168.49.2:30080 kaeu@192.168.56.3
 
 > Acesse o serviço em `http://localhost:8080`.
 
-## Portainer
+## Portainer com Nginx Proxy Manager (NPM)
 
 ```bash
 $ kubectl apply -n portainer -f https://downloads.portainer.io/ce-lts/portainer.yaml
@@ -195,3 +195,4 @@ $ kubectl rollout restart deployment wordpress -n wordpress
 - [Wordpress + MySQL | Ambiente de Desenvolvimento](https://kubernetes.io/docs/tutorials/stateful-application/mysql-wordpress-persistent-volume/)
 - [Wordpress + MySQL | Ambiente de Produção](https://github.com/bitnami/charts/tree/main/bitnami/wordpress)
 - [Portainer](https://docs.portainer.io/start/install-ce/server/kubernetes/baremetal#deploy-using-yaml-manifests)
+- [Nginx Proxy Manager (NPM) | Full setup on Docker](https://nginxproxymanager.com/setup/)

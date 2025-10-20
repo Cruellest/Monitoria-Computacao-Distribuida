@@ -1,0 +1,83 @@
+# ===============================
+# NAMESPACE
+# ===============================
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: portainer
+---
+# ===============================
+# SERVICE - Portainer
+# ===============================
+apiVersion: v1
+kind: Service
+metadata:
+  name: portainer
+  namespace: portainer
+spec:
+  type: NodePort
+  ports:
+    - port: 9000
+      nodePort: 30000
+  selector:
+    app: portainer
+--- 
+# ===============================
+# PVC - Portainer
+# ===============================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: portainer-pvc
+  namespace: portainer
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+# ===============================
+# DEPLOYMENT - Portainer
+# ===============================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portainer
+  namespace: portainer
+spec:
+  selector:
+    matchLabels:
+      app: portainer
+  template:
+    metadata: 
+      labels:
+        app: portainer
+    spec:
+      containers:
+      - name: portainer
+        image: portainer/portainer-ce:latest
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - name: portainer-storage
+          mountPath: /data
+      volumes:
+      - name: portainer-storage
+        persistentVolumeClaim:
+          claimName: portainer-pvc
+---
+# ===============================
+# Secret - NPM
+# ===============================
+apiVersion: v1
+kind: Secret
+metadata:
+  name: npm-secret
+  namespace: portainer
+type: Opaque
+dataStrings:
+  admin-user: admin
+  admin-password: admin123
+---
+# ===============================
