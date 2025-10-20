@@ -35,6 +35,27 @@ docker -v
 
 ---
 
+#### Instalando o Docker Compose
+
+Para realizar a instalação, você precisará de privilégios de superusuário (root).
+Execute os comandos a seguir em seu terminal. O primeiro comando baixa o binário da versão `v2.39.4` e o salva em `/usr/local/bin`, e o segundo aplica as permissões necessárias para que ele possa ser executado.
+
+```bash
+# Baixa o binário do Docker Compose para o diretório de executáveis
+curl -SL https://github.com/docker/compose/releases/download/v2.39.4/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+
+# Aplica permissões de execução ao binário
+chmod +x /usr/local/bin/docker-compose
+```
+
+Após a conclusão, você pode verificar se a instalação foi bem-sucedida consultando a versão do Docker Compose:
+
+```bash
+docker-compose --version
+```
+
+---
+
 #### **Iniciando nosso primeiro contêiner**
 
 Executar um contêiner no Docker é simples. Para rodar um contêiner de teste, use:
@@ -134,7 +155,7 @@ docker stats
 docker update --cpus 0.5 <ID_CONTAINER>
 
 # Limita o contêiner a 128 MB de memória
-docker update --memory 128M <ID_CONTAINER>
+docker update --memory 128M --memory-swap 128M <ID_CONTAINER>
 ```
 
 ---
