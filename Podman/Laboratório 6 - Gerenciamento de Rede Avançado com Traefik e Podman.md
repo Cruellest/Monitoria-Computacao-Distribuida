@@ -74,6 +74,7 @@ services:
       # Monta o socket do Podman do host para o caminho esperado no contêiner
       - /run/user/1000/podman/podman.sock:/var/run/podman/podman.sock:ro
       # Observação: troque '1000' pelo ID do seu usuário (verifique com o comando 'id -u')
+      - $PWD/traefik.yml:/etc/traefik/traefik.yml 
     networks:
       - proxy
 
