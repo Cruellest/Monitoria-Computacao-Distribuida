@@ -2,6 +2,8 @@
 
 O terraform é uma ferramenta para gerenciamento de infraestrutura de aplicações via descrição de código (IaC). Ela é mantida e criada pela empresa HashiCorp e apresenta uma documentação bem amigável com [tutoriais](https://developer.hashicorp.com/terraform/tutorials) de instalação em diversos provedores Cloud como AWS, Azure, Oracle, Docker e Google Cloud, por exemplo, além de tutoriais mais específicos da própria ferramenta, também trazendo casos de uso. 
 
+Com ela é possível instanciar componentes de baixo nivel - servidores, bancos de dados, balanceadores de carga e redes, por exemplo -, bem como aqueles de alto nivel, como entradas de DNS, CDN, Serveless services, Simple Queue Service, Simple Notification Service, Monitoramento e Logs, entre outras funcionalidades de SaaS.
+
 Aqui vamos seguir a documentação para implementação de uma infraestrutura com Docker para OS em Linux, mas caso queira, você pode seguir os passos para Windows ao longo do [tutorial](https://developer.hashicorp.com/terraform/tutorials/docker-get-started).
 
 ## Vantagens
